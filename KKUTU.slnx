@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="AI/AI.csproj" />
+  <Project Path="Bot/BotPlay.csproj" />
+  <Project Path="KKUTU/KKUTU.csproj" />
+  <Project Path="Manager/Manager.csproj" />
+  <Project Path="MultiPlay/MultiPlay.csproj" />
+  <Project Path="Server/Server.csproj" />
+  <Project Path="UI/UI.csproj" />
+  <Project Path="Utils/Utils.csproj" />
+</Solution>
