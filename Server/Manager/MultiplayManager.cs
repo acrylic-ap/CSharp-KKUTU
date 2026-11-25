@@ -25,6 +25,8 @@ namespace Server.Manager
 
         public override void ChangeTurn()
         {
+            base.ChangeTurn();
+
             CurrentTurn = (CurrentTurn + 1) % players.Length;
         }
     }

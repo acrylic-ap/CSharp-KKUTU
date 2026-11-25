@@ -6,6 +6,6 @@ namespace AI
 {
     public abstract class CodeAI : IAI
     {
-        public abstract Task<string> SelectWord(HashSet<string> usedWord, char initial);
+        public abstract Task<string> SelectWord(HashSet<string> usedWord, char initial, int shieldTurn);
     }
 }

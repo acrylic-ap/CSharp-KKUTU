@@ -38,6 +38,7 @@
             // initial
             // 
             initial.Location = new Point(20, 153);
+            initial.Click += initial_Click;
             // 
             // space
             // 
@@ -62,6 +63,7 @@
             Name = "BotGame";
             Text = "봇 게임";
             Shown += BotGame_Shown;
+            Controls.SetChildIndex(shield, 0);
             Controls.SetChildIndex(turn, 0);
             Controls.SetChildIndex(space, 0);
             Controls.SetChildIndex(input, 0);

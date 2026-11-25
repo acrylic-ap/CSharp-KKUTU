@@ -70,5 +70,15 @@ namespace UI.Forms
             if (result == DialogResult.No)
                 e.Cancel = true;
         }
+
+        private void GameForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void shield_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

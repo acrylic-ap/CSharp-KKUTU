@@ -6,6 +6,6 @@ namespace AI
 {
     public interface IAI
     {
-        Task<string> SelectWord(HashSet<string> usedWord, char initial);
+        Task<string> SelectWord(HashSet<string> usedWord, char initial, int shieldTurn);
     }
 }

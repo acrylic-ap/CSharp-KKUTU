@@ -36,6 +36,8 @@ namespace Manager
             ShowWord(word);
             gameManager.ChangeTurn();
 
+            shield.Text = gameManager.ShieldTurn.ToString();
+
             if (await IsGameOver())
             {
                 GameOver();
@@ -102,15 +104,27 @@ namespace Manager
 
         private async Task AITurn()
         {
-            string selectedWord = await gameManager.PlayAI();
-
-            if (selectedWord == "")
+            try
             {
-                AIResign();
-                return;
-            }
+                string selectedWord = await gameManager.PlayAI();
 
-            await CompleteTurn(selectedWord);
+                if (selectedWord == "")
+                {
+                    AIResign();
+                    return;
+                }
+
+                await CompleteTurn(selectedWord);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+        }
+
+        private void initial_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

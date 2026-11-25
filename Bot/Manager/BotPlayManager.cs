@@ -23,6 +23,8 @@ namespace BotPlay.Manager
 
         public override void ChangeTurn()
         {
+            base.ChangeTurn();
+
             CurrentTurn = CurrentTurn == Turn.Player
                 ? Turn.AI
                 : Turn.Player;
@@ -31,7 +33,7 @@ namespace BotPlay.Manager
         public async Task<string> PlayAI()
         {
             string selectedWord = await usingAI.SelectWord(
-                usedWord, StartChar
+                usedWord, StartChar, ShieldTurn
             );
 
             if (await CheckWord(selectedWord) is null)

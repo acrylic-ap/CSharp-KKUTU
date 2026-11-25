@@ -23,6 +23,7 @@
             input = new TextBox();
             space = new Panel();
             usedWordList = new FlowLayoutPanel();
+            shield = new Label();
             SuspendLayout();
             // 
             // turn
@@ -78,11 +79,23 @@
             usedWordList.TabIndex = 3;
             usedWordList.WrapContents = false;
             // 
+            // shield
+            // 
+            shield.AutoSize = true;
+            shield.Font = new Font("Pretendard", 11F);
+            shield.Location = new Point(745, 84);
+            shield.Name = "shield";
+            shield.Size = new Size(29, 23);
+            shield.TabIndex = 4;
+            shield.Text = "12";
+            shield.Click += shield_Click;
+            // 
             // GameForm
             // 
             AutoScaleDimensions = new SizeF(9F, 18F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(shield);
             Controls.Add(usedWordList);
             Controls.Add(initial);
             Controls.Add(input);
@@ -91,6 +104,7 @@
             Name = "GameForm";
             Padding = new Padding(20, 20, 20, 60);
             Text = "그두";
+            Load += GameForm_Load;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -102,5 +116,6 @@
         protected TextBox input;
         protected Panel space;
         protected FlowLayoutPanel usedWordList;
+        protected Label shield;
     }
 }
