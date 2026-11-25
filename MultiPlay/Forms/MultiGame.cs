@@ -3,46 +3,74 @@ using UI.Forms;
 
 namespace MultiPlay
 {
-    public partial class MultiGame : GameForm, IGame
+    public partial class MultiGame : GameForm
     {
-        private readonly MultiPlayManager gameManager = new();
+        private readonly ClientManager clientManager;
+        private readonly int sessionId;
 
-        public MultiGame()
+        private char startChar;
+        private int playerIndex;
+        private int currentTurn;
+
+        public MultiGame(ClientManager clientManager, int sessionId)
         {
-            InitializeComponent();
+            Text = "멀티플레이";
+
+            this.clientManager = clientManager;
+            this.sessionId = sessionId;
+
+            input.KeyDown += Input_KeyDown;
+            Shown += MultiGame_Shown;
+
+            clientManager.GameStart += StartGame;
+            clientManager.WordError += ShowWordError;
+            clientManager.WordAccepted += ReceiveWord;
+            clientManager.GameOver += FinishGame;
         }
+
         public void Initialize()
         {
-            gameManager.Initialize();
-            ShowInitial(gameManager.StartChar);
+            DisableInput();
+
+            turn.Text = "게임 시작 대기 중...";
+            initial.Text = "";
         }
 
-        public Task<bool> CompleteTurn(string word)
+        private void StartGame(char startChar, int playerIndex)
         {
-            throw new NotImplementedException();
+            BeginInvoke(() =>
+            {
+                this.startChar = startChar;
+                this.playerIndex = playerIndex;
+
+                currentTurn = 0;
+
+                ShowInitial(startChar);
+                UpdateTurn();
+            });
         }
 
-        public async Task<bool> IsGameOver()
+        private void UpdateTurn()
         {
-            return !await gameManager.IsExistInitial();
+            if (currentTurn == playerIndex)
+            {
+                turn.Text = "내 차례";
+                EnableInput();
+                return;
+            }
+
+            turn.Text = "상대 차례";
+            DisableInput();
         }
 
         public void ShowWord(string word)
         {
-            base.ShowWord(word, gameManager.StartChar);
+            base.ShowWord(word, startChar);
         }
 
-        private async Task<bool> PlayerTurn(string word)
+        private async Task PlayerTurn(string word)
         {
-            string? err_message = await gameManager.CheckWord(word);
-
-            if (err_message is not null)
-            {
-                MessageBox.Show(err_message, "그두");
-                return false;
-            }
-
-            return !await CompleteTurn(word);
+            await clientManager.Send($"[Word]\n{sessionId}\n{word}");
         }
 
         private async void Input_KeyDown(object? sender, KeyEventArgs e)
@@ -58,22 +86,84 @@ namespace MultiPlay
                 string word = input.Text;
                 input.Clear();
 
-                if (!await PlayerTurn(word))
-                    return;
+                await PlayerTurn(word);
             }
             catch
             {
                 ShowError();
             }
-            finally
+        }
+
+        private async void MultiGame_Shown(object? sender, EventArgs e)
+        {
+            Initialize();
+
+            try
             {
-                EnableInput();
+                await clientManager.Send($"[Ready]\n{sessionId}");
+            }
+            catch
+            {
+                ShowError();
             }
         }
 
-        private void MultiGame_Shown(object? sender, EventArgs e)
+        // -- Server Response ---------------------------------
+
+        private void ShowWordError(string message)
         {
-            Initialize();
+            BeginInvoke(() =>
+            {
+                MessageBox.Show(message, "그두");
+                UpdateTurn();
+            });
+        }
+
+        private void ReceiveWord(
+            string word, char nextChar, int nextTurn, bool isFinished)
+        {
+            BeginInvoke(() =>
+            {
+                startChar = nextChar;
+                currentTurn = nextTurn;
+
+                ShowWord(word);
+
+                if (isFinished)
+                {
+                    DisableInput();
+                    return;
+                }
+
+                UpdateTurn();
+            });
+        }
+
+        private void FinishGame(int loserIndex)
+        {
+            BeginInvoke(() =>
+            {
+                DisableInput();
+
+                MessageBox.Show(
+                    loserIndex == playerIndex
+                        ? "패배하였습니다."
+                        : "승리하였습니다.",
+                    "그두"
+                );
+
+                DialogResult = DialogResult.OK;
+            });
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            clientManager.GameStart -= StartGame;
+            clientManager.WordError -= ShowWordError;
+            clientManager.WordAccepted -= ReceiveWord;
+            clientManager.GameOver -= FinishGame;
+
+            base.OnFormClosed(e);
         }
     }
 }

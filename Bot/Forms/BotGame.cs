@@ -3,7 +3,7 @@ using UI.Forms;
 
 namespace Manager
 {
-    public partial class BotGame : GameForm, IGame
+    public partial class BotGame : GameForm
     {
         private readonly BotPlayManager gameManager = new();
 

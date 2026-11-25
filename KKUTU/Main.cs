@@ -1,30 +1,46 @@
 using Manager;
+using MultiPlay;
 using MultiPlay.Manager;
-using System.Net.Sockets;
-using System.Reflection.PortableExecutable;
-using System.Text;
+using System.Diagnostics;
 
 namespace KKUTU
 {
     public partial class Main : Form
     {
         private readonly ClientManager clientManager = new();
+        private readonly Stopwatch matchingWatch = new();
+        private CancellationTokenSource? matchingCts;
+
+        private void EnterGame(int sessionId)
+        {
+            BeginInvoke(() =>
+            {
+                if (matchingCts is null || matchingCts.IsCancellationRequested)
+                    return;
+
+                matchingCancelButton.Visible = false;
+                StopTimer();
+
+                using MultiGame multiGame = new(clientManager, sessionId);
+
+                Hide();
+                multiGame.ShowDialog();
+                Show();
+
+                matchingCts?.Cancel();
+            });
+        }
 
         public Main()
         {
             InitializeComponent();
-        }
 
-        private void disableButton()
-        {
-            aiPlayButton.Enabled = false;
-            multiPlayButton.Enabled = false;
-        }
+            clientManager.MatchSuccess += EnterGame;
 
-        private void enableButton()
-        {
-            aiPlayButton.Enabled = true;
-            multiPlayButton.Enabled = true;
+            loading.Dock = DockStyle.None;
+            loading.AutoSize = false;
+            loading.Bounds = ClientRectangle;
+            loading.BringToFront();
         }
 
         private async void Form1_Load(object sender, EventArgs e)
@@ -65,13 +81,58 @@ namespace KKUTU
             label1.Width = this.Width;
         }
 
+        private void StartTimer()
+        {
+            matchingTime.Visible = true;
+            matchingWatch.Restart();
+            matchingTimer.Start();
+        }
+
+        private void StopTimer()
+        {
+            matchingTimer.Stop();
+            matchingWatch.Stop();
+            matchingTime.Visible = false;
+        }
+
+        private void EnableMatching()
+        {
+            multiPlayButton.Text = "매칭 중...";
+
+            aiPlayButton.Enabled = false;
+            multiPlayButton.Enabled = false;
+
+            matchingCancelButton.Visible = true;
+
+            StartTimer();
+        }
+
+        private void DisableMatching()
+        {
+            multiPlayButton.Text = "멀티 플레이";
+
+            aiPlayButton.Enabled = true;
+            multiPlayButton.Enabled = true;
+
+            matchingCancelButton.Visible = false;
+
+            StopTimer();
+        }
+
         private async void multiPlayButton_Click(object sender, EventArgs e)
         {
+            matchingCts = new();
+
             try
             {
-                disableButton();
+                EnableMatching();
 
-                await clientManager.Matching();
+                await clientManager.Matching(matchingCts.Token);
+            }
+            catch (OperationCanceledException)
+                    when (matchingCts.IsCancellationRequested)
+            {
+
             }
             catch
             {
@@ -80,7 +141,10 @@ namespace KKUTU
             }
             finally
             {
-                enableButton();
+                matchingCts.Dispose();
+                matchingCts = null;
+
+                DisableMatching();
             }
         }
 
@@ -93,10 +157,22 @@ namespace KKUTU
             this.Show();
         }
 
+        private void matchingTimer_Tick(object? sender, EventArgs e)
+        {
+            matchingTime.Text =
+                $"매칭 대기 시간\n" +
+                $"[{matchingWatch.Elapsed:mm\\:ss}]";
+        }
+
         private void loading_Click(object sender, EventArgs e)
         {
             this.loading.Width = this.Width;
             this.loading.Height = this.Height;
+        }
+
+        private void matchingCancelButton_Click(object sender, EventArgs e)
+        {
+            matchingCts?.Cancel();
         }
     }
 }

@@ -11,10 +11,10 @@ namespace Manager
 
         private static readonly string connectionString = new MySqlConnectionStringBuilder
         {
-            Server = "localhost",
+            Server = "25.31.207.102",
             Port = 3306,
             Database = "KKUTU",
-            UserID = "root",
+            UserID = "kkutu_client",
             Password = "1234"
         }.ConnectionString;
 

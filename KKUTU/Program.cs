@@ -8,8 +8,20 @@ namespace KKUTU
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
+            using Mutex mutex = new(true, "KKUTU", out bool isNew);
+
+            if (!isNew)
+            {
+                MessageBox.Show(
+                    "이미 게임이 실행 중입니다.",
+                    "그두",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
             ApplicationConfiguration.Initialize();
             Application.Run(new Main());
         }

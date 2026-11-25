@@ -3,7 +3,9 @@
   <Project Path="Bot/BotPlay.csproj" />
   <Project Path="KKUTU/KKUTU.csproj" />
   <Project Path="Manager/Manager.csproj" />
+  <Project Path="Model/Model.csproj" Id="045ddc0f-cbb1-43e8-b0cd-071894d2ab69" />
   <Project Path="MultiPlay/MultiPlay.csproj" />
+  <Project Path="Network/Network.csproj" Id="7b7ca9d5-7d78-446e-9564-a1e0c0e8420d" />
   <Project Path="Server/Server.csproj" />
   <Project Path="UI/UI.csproj" />
   <Project Path="Utils/Utils.csproj" />
