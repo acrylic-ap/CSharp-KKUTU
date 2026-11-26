@@ -13,10 +13,10 @@ namespace MultiPlay.Manager
         private NetworkStream? stream;
         private readonly SemaphoreSlim sendLock = new(1, 1);
 
-        public event Action<char, int>? GameStart;
+        public event Action<char, int, int>? GameStart;
+        public event Action<string, char, int, bool, int>? WordAccepted;
 
         public event Action<string>? WordError;
-        public event Action<string, char, int, bool>? WordAccepted;
         public event Action<int>? GameOver;
 
         private async Task Receive(NetworkStream stream, CancellationToken token)
@@ -63,7 +63,10 @@ namespace MultiPlay.Manager
                         if (!int.TryParse(gameData[1], out int playerIndex))
                             break;
 
-                        GameStart?.Invoke(startChar, playerIndex);
+                        if (!int.TryParse(gameData[2], out int initialShieldTurn))
+                            break;
+
+                        GameStart?.Invoke(startChar, playerIndex, initialShieldTurn);
 
                         break;
 
@@ -93,8 +96,11 @@ namespace MultiPlay.Manager
                         if (!bool.TryParse(acceptedData[3], out bool isFinished))
                             break;
 
+                        if (!int.TryParse(acceptedData[4], out int shieldTurn))
+                            break;
+
                         WordAccepted?.Invoke(
-                            acceptedData[0], nextChar, nextTurn, isFinished
+                            acceptedData[0], nextChar, nextTurn, isFinished, shieldTurn
                         );
 
                         break;

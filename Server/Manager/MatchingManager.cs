@@ -140,7 +140,7 @@ namespace Server.Manager
 
                 await Task.WhenAll(
                     room.Connections.Select((c, i) =>
-                        c.Send($"[GameStart]\n{room.GameManager.StartChar}\n{i}"))
+                        c.Send($"[GameStart]\n{room.GameManager.StartChar}\n{i}\n{room.GameManager.ShieldTurn}"))
                 );
 
                 Console.WriteLine($"게임 시작: {room.Id}");
@@ -198,7 +198,8 @@ namespace Server.Manager
                     $"[WordAccepted]\n{word}\n" +
                     $"{room.GameManager.StartChar}\n" +
                     $"{room.GameManager.CurrentTurn}\n" +
-                    $"{room.IsFinished}"
+                    $"{room.IsFinished}\n" +
+                    $"{room.GameManager.ShieldTurn}"
                 ))
             );
 

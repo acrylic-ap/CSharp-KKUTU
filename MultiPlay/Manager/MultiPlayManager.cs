@@ -17,6 +17,7 @@ namespace MultiPlay.Manager
 
         public override void ChangeTurn()
         {
+            base.ChangeTurn();
             CurrentTurn = (CurrentTurn + 1) % players.Count;
         }
     }

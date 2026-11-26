@@ -1,3 +1,4 @@
+using Manager;
 using MultiPlay.Manager;
 using UI.Forms;
 
@@ -36,7 +37,7 @@ namespace MultiPlay
             initial.Text = "";
         }
 
-        private void StartGame(char startChar, int playerIndex)
+        private void StartGame(char startChar, int playerIndex, int shieldTurn)
         {
             BeginInvoke(() =>
             {
@@ -44,6 +45,7 @@ namespace MultiPlay
                 this.playerIndex = playerIndex;
 
                 currentTurn = 0;
+                shield.Text = shieldTurn.ToString();
 
                 ShowInitial(startChar);
                 UpdateTurn();
@@ -119,13 +121,13 @@ namespace MultiPlay
             });
         }
 
-        private void ReceiveWord(
-            string word, char nextChar, int nextTurn, bool isFinished)
+        private void ReceiveWord(string word, char nextChar, int nextTurn, bool isFinished, int shieldTurn)
         {
             BeginInvoke(() =>
             {
                 startChar = nextChar;
                 currentTurn = nextTurn;
+                shield.Text = shieldTurn.ToString();
 
                 ShowWord(word);
 
@@ -164,6 +166,11 @@ namespace MultiPlay
             clientManager.GameOver -= FinishGame;
 
             base.OnFormClosed(e);
+        }
+
+        private void MultiGame_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

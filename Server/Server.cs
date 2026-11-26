@@ -27,8 +27,6 @@ namespace Server
                 }
 
                 await connection.Send($"[Ping]\n{id}");
-
-                Console.WriteLine($"Ping 전송: {id}");
             }
             catch (Exception e)
             {
@@ -112,7 +110,6 @@ namespace Server
                                     break;
 
                                 connection.ReceivePong(id);
-                                Console.WriteLine($"Pong 수신: {id}");
 
                                 break;
 
