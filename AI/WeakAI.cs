@@ -1,6 +1,4 @@
-﻿
-
-using Manager;
+﻿using Manager.Manager.Database;
 
 namespace AI
 {
@@ -8,7 +6,7 @@ namespace AI
     {
         public override async Task<string> SelectWord(HashSet<string> usedWord, char initial, int shieldTurn)
         {
-            string selected = await DatabaseManager.FindAvailableRandomWord(usedWord, initial, shieldTurn);
+            string selected = await AIManager.FindRandomWord(usedWord, initial, shieldTurn);
 
             return selected;
         }

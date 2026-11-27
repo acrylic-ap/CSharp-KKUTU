@@ -1,4 +1,4 @@
-﻿using Manager;
+﻿using Manager.Manager.Database;
 using Model;
 using Network;
 using Server.Manager;
@@ -171,7 +171,7 @@ namespace Server
 
             try
             {
-                await DatabaseManager.StoreStartChars();
+                await InitialManager.StoreStartChars();
                 Console.WriteLine("시작 음절 목록 초기화 완료");
             }
             catch (Exception e)

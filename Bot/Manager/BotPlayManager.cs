@@ -1,4 +1,4 @@
-﻿using Manager;
+using Manager;
 using AI;
 
 namespace BotPlay.Manager
@@ -10,7 +10,7 @@ namespace BotPlay.Manager
 
     public class BotPlayManager : GameManager
     {
-        public IAI usingAI = new WeakAI();
+        public IAI usingAI = new StrategicAI();
 
         public Turn CurrentTurn { get; private set; } = Turn.Player;
 
@@ -18,7 +18,9 @@ namespace BotPlay.Manager
         {
             base.Initialize();
 
-            CurrentTurn = Turn.Player;
+            int selectRandom = Random.Shared.Next(2);
+
+            CurrentTurn = selectRandom == 1 ? Turn.AI : Turn.Player;
         }
 
         public override void ChangeTurn()

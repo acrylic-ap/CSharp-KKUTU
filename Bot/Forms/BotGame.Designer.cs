@@ -62,6 +62,7 @@
             Controls.Add(usedWordList);
             Name = "BotGame";
             Text = "봇 게임";
+            Load += BotGame_Load;
             Shown += BotGame_Shown;
             Controls.SetChildIndex(shield, 0);
             Controls.SetChildIndex(turn, 0);

@@ -1,4 +1,5 @@
-﻿using Utils;
+﻿using Manager.Manager.Database;
+using Utils;
 
 namespace Manager
 {
@@ -12,7 +13,7 @@ namespace Manager
         public virtual void Initialize()
         {
             usedWord.Clear();
-            StartChar = DatabaseManager.GetStartChar();
+            StartChar = InitialManager.GetStartChar();
             ShieldTurn = 12;
         }
 
@@ -35,12 +36,12 @@ namespace Manager
             if (usedWord.Contains(word))
                 return "이미 쓰인 단어입니다.";
 
-            if (await DatabaseManager.IsExistWord(word) == false)
+            if (await WordManager.IsExistWord(word) == false)
                 return "무효";
 
             if (
                 ShieldTurn > 0 && 
-                await DatabaseManager.IsPossibleWord(word, ShieldTurn, usedWord) == false
+                await WordManager.IsPossibleWord(word, ShieldTurn, usedWord) == false
             )
                 return "보호막";
 
@@ -52,7 +53,7 @@ namespace Manager
 
         public async Task<bool> IsExistInitial()
         {
-            return await DatabaseManager.IsExistInitial(usedWord, StartChar);
+            return await InitialManager.IsExistInitial(usedWord, StartChar);
         }
 
         public virtual void ChangeTurn()

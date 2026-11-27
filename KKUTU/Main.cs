@@ -1,4 +1,5 @@
 using Manager;
+using Manager.Manager.Database;
 using MultiPlay;
 using MultiPlay.Manager;
 using System.Diagnostics;
@@ -57,7 +58,7 @@ namespace KKUTU
 
                 try
                 {
-                    await DatabaseManager.StoreStartChars();
+                    await InitialManager.StoreStartChars();
 
                     loading.Visible = false;
                 }
@@ -150,11 +151,10 @@ namespace KKUTU
 
         private void aiPlayButton_Click(object sender, EventArgs e)
         {
-            BotGame botGame = new BotGame();
-
-            this.Hide();
-            botGame.ShowDialog();
-            this.Show();
+            using BotGame botGame = new();
+            Hide();
+            try { botGame.ShowDialog(); }
+            finally { Show(); }
         }
 
         private void matchingTimer_Tick(object? sender, EventArgs e)
